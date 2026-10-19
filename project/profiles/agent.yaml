@@ -1,0 +1,31 @@
+# Tool-using agent without document search.
+extends: project/profiles/base.yaml
+
+flow:
+  type: agent
+  llm: "@llm"
+  prompt: project/prompts/agent_system.md
+  tools:
+    - check_refund_eligibility
+    - issue_refund
+    # Example HTTP tool against an internal API:
+    # - type: http
+    #   name: get_order
+    #   description: Look up an order by id
+    #   base_url: ${ORDERS_API:-http://localhost:8001}
+    #   path: /orders/{order_id}
+  memory:
+    type: buffer
+    max_messages: 30
+  policy:
+    max_steps: 6
+    max_tokens: 50000
+    tool_timeout_s: 20
+  guardrails:
+    - type: pii_redact
+      stages: [input, tool_result]
+
+evals:
+  datasets:
+    - path: project/evals/datasets/agent_tasks.jsonl
+      kind: agent

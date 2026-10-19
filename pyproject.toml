@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aikit"
+version = "0.1.0"
+description = "Config-driven kernel for building RAG and agentic AI applications on an internal LLM."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "httpx>=0.27",
+    "typer>=0.12",
+    "rich>=13.7",
+    "structlog>=24.1",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.111", "uvicorn[standard]>=0.30"]
+loaders = ["pypdf>=4.2", "python-docx>=1.1"]
+otel = [
+    "opentelemetry-api>=1.25",
+    "opentelemetry-sdk>=1.25",
+    "opentelemetry-exporter-otlp-proto-http>=1.25",
+]
+dev = [
+    "aikit[api,loaders]",
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+    "pyright>=1.1.370",
+    "import-linter>=2.0",
+    "pre-commit>=3.7",
+    "poethepoet>=0.27",
+    "copier>=9.3",
+]
+
+[project.scripts]
+aikit = "aikit.serving.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aikit"]
+
+# ---------------------------------------------------------------- tasks
+[tool.poe.tasks]
+fmt = { shell = "ruff format . && ruff check --fix ." }
+lint = "ruff check ."
+typecheck = "pyright"
+arch = "lint-imports"
+test = "pytest"
+check = ["lint", "typecheck", "arch", "test"]
+ingest = "aikit ingest"
+eval = "aikit eval"
+serve = "aikit serve"
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "."]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "ASYNC"]
+ignore = ["RUF012", "B008", "ASYNC240"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["aikit", "project"]
+
+# ---------------------------------------------------------------- pyright
+[tool.pyright]
+include = ["src", "project"]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+reportMissingImports = "warning"
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["."]
+addopts = "-ra"

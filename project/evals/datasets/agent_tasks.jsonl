@@ -1,0 +1,2 @@
+{"id": "eligibility-check", "input": "Can I get a refund? My order total was 120 and I bought it 10 days ago.", "expected_tools": ["check_refund_eligibility"], "forbidden_tools": ["issue_refund"], "must_include": ["eligible"], "expected_status": "completed"}
+{"id": "refund-needs-approval", "input": "Please issue a refund for order A-1001, amount 80.", "expected_tools": ["issue_refund"], "expected_status": "awaiting_approval"}

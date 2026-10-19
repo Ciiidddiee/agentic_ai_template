@@ -1,0 +1,6 @@
+{"id": "return-window", "question": "How many days do I have to return an item for a refund?", "expected_sources": ["refund_policy.md"], "must_include": ["30 days"], "k": 4}
+{"id": "opened-fee", "question": "Is there a restocking fee for opened items?", "expected_sources": ["refund_policy.md"], "must_include": ["15%"], "k": 4}
+{"id": "express-shipping", "question": "How long does express shipping take and what does it cost?", "expected_sources": ["shipping.md"], "k": 4}
+{"id": "warranty-length", "question": "How long is the warranty on electronics?", "expected_sources": ["warranty.md"], "must_include": ["12-month"], "k": 4}
+{"id": "acl-hidden", "question": "What goodwill credit can support leads grant?", "expected_sources": [], "forbidden_sources": ["internal_escalation.md"], "groups": [], "k": 4}
+{"id": "acl-visible", "question": "What goodwill credit can support leads grant?", "expected_sources": ["internal_escalation.md"], "groups": ["support_leads"], "k": 4}

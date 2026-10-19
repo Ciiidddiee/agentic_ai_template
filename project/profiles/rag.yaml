@@ -1,0 +1,20 @@
+# Plain RAG: retrieve -> rerank -> answer with citations.
+extends: project/profiles/base.yaml
+
+flow:
+  type: rag
+  llm: "@llm"
+  retriever: "@retriever"
+  reranker: "@reranker"
+  prompt: project/prompts/answer_with_citations.md
+  top_k: 8
+  guardrails:
+    - type: pii_redact
+      stages: [input, context]
+    - type: max_length
+      max_chars: 4000
+
+evals:
+  datasets:
+    - path: project/evals/datasets/rag_golden.jsonl
+      kind: rag

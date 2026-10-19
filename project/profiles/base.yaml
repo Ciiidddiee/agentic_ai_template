@@ -1,0 +1,53 @@
+# Shared components. Profiles extend this file and add a flow.
+# All paths are relative to the repo root (where you run `aikit`).
+
+app:
+  name: acme-support
+
+imports:
+  - project.tools
+
+components:
+  llm:
+    type: openai_compat
+    base_url: ${LLM_BASE_URL:-http://localhost:8000/v1}
+    model: ${LLM_MODEL:-default}
+    api_key: ${LLM_TOKEN:-}
+    temperature: 0.1
+
+  embedder:
+    type: openai_compat
+    base_url: ${LLM_BASE_URL:-http://localhost:8000/v1}
+    model: ${EMBED_MODEL:-default-embedding}
+    api_key: ${LLM_TOKEN:-}
+
+  vector_store:
+    type: in_memory
+    path: .aikit/index/acme_support.json
+
+  retriever:
+    type: hybrid
+    store: "@vector_store"
+    embedder: "@embedder"
+    top_k: 8
+    alpha: 0.6
+
+  reranker:
+    type: passthrough
+    top_n: 4
+
+ingest:
+  loaders:
+    - type: markdown
+      path: project/data
+  chunker:
+    type: markdown
+    chunk_size: 800
+    chunk_overlap: 100
+
+observability:
+  log_level: INFO
+  log_format: console
+  tracing: false
+  costs:
+    default: { input_per_1k: 0.0, output_per_1k: 0.0 }

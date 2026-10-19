@@ -1,0 +1,31 @@
+# Agentic RAG: the agent flow with the retriever exposed as a tool.
+extends: project/profiles/base.yaml
+
+flow:
+  type: agent
+  llm: "@llm"
+  prompt: project/prompts/agent_system.md
+  tools:
+    - type: retriever_tool
+      name: search_policies
+      description: Search Acme customer policy documents (refunds, shipping, warranty).
+      retriever: "@retriever"
+      top_k: 4
+    - check_refund_eligibility
+    - issue_refund
+  memory:
+    type: buffer
+    max_messages: 30
+  policy:
+    max_steps: 8
+    max_tokens: 80000
+  guardrails:
+    - type: pii_redact
+      stages: [input, tool_result]
+
+evals:
+  datasets:
+    - path: project/evals/datasets/rag_golden.jsonl
+      kind: rag
+    - path: project/evals/datasets/agent_tasks.jsonl
+      kind: agent

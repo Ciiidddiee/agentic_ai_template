@@ -1,0 +1,9 @@
+# Active configuration. Switch behaviour by changing `extends`:
+#   project/profiles/rag.yaml          plain RAG
+#   project/profiles/agent.yaml        tool-using agent
+#   project/profiles/agentic_rag.yaml  agent that can search documents
+extends: project/profiles/agentic_rag.yaml
+
+app:
+  name: acme-support
+  description: Customer support assistant for Acme policies and refunds.

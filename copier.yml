@@ -1,0 +1,47 @@
+# Generate a new app:   copier copy --trust path/or/git-url/of/this/template my-new-app
+# Pull template fixes:  copier update --trust     (run inside the generated app)
+_min_copier_version: "9.2.0"
+_answers_file: .copier-answers.yml
+_exclude:
+  - copier.yml
+  - .git
+  - .venv
+  - venv
+  - .aikit
+  - "**/__pycache__"
+  - .pytest_cache
+  - .ruff_cache
+  - .mypy_cache
+  - .import_linter_cache
+  - "*.egg-info"
+  - .env
+_tasks:
+  - command: >-
+      "{{ _copier_python }}" scripts/rename_package.py {{ package_name }}
+      --dist {{ distribution_name }} --app-name {{ project_slug }}
+
+project_name:
+  type: str
+  help: Human-readable name of the app
+  default: My AI App
+
+project_slug:
+  type: str
+  help: Short identifier used for app.name, logs, and traces
+  default: "{{ project_name | lower | replace(' ', '-') }}"
+
+package_name:
+  type: str
+  help: >-
+    Import name of the kernel package under src/. Keep "aikit" if you plan to
+    share one kernel across apps; use an org-prefixed name (e.g. acme_ai) to own it.
+  default: aikit
+  validator: >-
+    {% if not (package_name | regex_search('^[a-z_][a-z0-9_]*$')) %}
+    Must be a lowercase Python identifier, e.g. acme_ai
+    {% endif %}
+
+distribution_name:
+  type: str
+  help: Name used by pip/uv and your internal package index
+  default: "{{ package_name | replace('_', '-') }}"

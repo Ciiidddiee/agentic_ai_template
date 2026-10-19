@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.import_linter_cache/
+.coverage
+htmlcov/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime artifacts (indexes, eval reports)
+.aikit/
+
+# Project data: only the bundled samples are committed
+project/data/*
+!project/data/samples/
+!project/data/README.md
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

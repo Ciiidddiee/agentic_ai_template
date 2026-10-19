@@ -1,0 +1,50 @@
+[importlinter]
+root_package = aikit
+include_external_packages = True
+
+[importlinter:contract:core-is-pure]
+name = Core depends on nothing else in aikit and on no I/O or AI SDKs
+type = forbidden
+source_modules =
+    aikit.core
+forbidden_modules =
+    aikit.components
+    aikit.flows
+    aikit.observability
+    aikit.runtime
+    aikit.evals
+    aikit.serving
+    httpx
+    fastapi
+    typer
+    structlog
+    opentelemetry
+
+[importlinter:contract:siblings-independent]
+name = Components, flows and observability do not import each other
+type = independence
+modules =
+    aikit.components
+    aikit.flows
+    aikit.observability
+
+[importlinter:contract:no-upward-imports]
+name = Lower layers never import runtime, evals or serving
+type = forbidden
+source_modules =
+    aikit.components
+    aikit.flows
+    aikit.observability
+forbidden_modules =
+    aikit.runtime
+    aikit.evals
+    aikit.serving
+
+[importlinter:contract:runtime-below-serving]
+name = Runtime does not import serving or evals
+type = forbidden
+source_modules =
+    aikit.runtime
+forbidden_modules =
+    aikit.serving
+    aikit.evals
